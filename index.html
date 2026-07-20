@@ -163,45 +163,50 @@
 
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            padding: 40px 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            padding: 20px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .feature-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 30px;
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             transition: all 0.3s;
         }
 
         .feature-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
         }
 
         .feature-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 102, 241, 0.08);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
 
         .feature-card h3 {
-            font-size: 18px;
-            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .feature-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            line-height: 1.5;
         }
 
         .section {
