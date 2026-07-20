@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片解析助手 - Image Analysis Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --accent-color: #f472b6;
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #252542;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #3d3d5c;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a3e 50%, #0f0f23 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .header-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .section {
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .workflow {
+            position: relative;
+        }
+
+        .workflow::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+            transform: translateX(-50%);
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .workflow-step {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .workflow-step:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .workflow-step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-number {
+            position: relative;
+            z-index: 1;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            width: calc(50% - 45px);
+        }
+
+        .step-content h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-content li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .step-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .color-grading {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .color-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .color-card h4 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .color-card code {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            color: #a5f3fc;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .output-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .output-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .output-header {
+            padding: 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .output-header h3 {
+            font-size: 16px;
+        }
+
+        .output-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-json {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .badge-text {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .output-content {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .output-content pre {
+            margin: 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .output-content code {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .usage-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .usage-section code {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            color: #a5f3fc;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .params-table th,
+        .params-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .params-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .params-table td {
+            color: var(--text-primary);
+        }
+
+        .params-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .notes-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .note-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .note-card.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .note-card.info {
+            border-left-color: var(--info-color);
+        }
+
+        .note-card.success {
+            border-left-color: var(--success-color);
+        }
+
+        .note-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .note-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .scenario-tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .scenario-tag:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .scenario-tag span {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .scenario-tag p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border-color);
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        footer .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        footer .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        footer .social-links a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .workflow-step,
+            .workflow-step:nth-child(even) {
+                flex-direction: column;
+            }
+
+            .step-content {
+                width: 100%;
+            }
+
+            .workflow::before {
+                left: 25px;
+            }
+
+            .output-section {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .header-links {
+                display: none;
+            }
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .copy-success {
+            color: var(--success-color);
+            font-size: 12px;
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-success.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">🖼️</div>
+                <div class="logo-text">
+                    <h1>图片解析助手</h1>
+                    <p>Image Analysis Helper</p>
+                </div>
+            </div>
+            <div class="header-links">
+                <a href="#features">功能特性</a>
+                <a href="#workflow">工作流程</a>
+                <a href="#output">输出格式</a>
+                <a href="#usage">使用方法</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>图片解析助手</h2>
+            <p>将图片解析为结构化的文本信息，输出包含图片内容与构图、画风、色彩参数的 JSON 文件和文本 Prompt</p>
+            <div class="hero-buttons">
+                <a href="#workflow" class="btn btn-primary">开始使用</a>
+                <a href="#output" class="btn btn-secondary">查看输出格式</a>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="feature-card">
+                <div class="feature-icon">📷</div>
+                <h3>图片内容解析</h3>
+                <p>识别图片主体、场景、动作、细节，以及构图方式、视角、景别等关键信息</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>艺术风格识别</h3>
+                <p>分析图片的艺术风格、画派特征、技术特点、时代特征和氛围调性</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌈</div>
+                <h3>专业色彩参数</h3>
+                <p>使用达芬奇调色专业参数描述图片色彩，包含一级调色、曲线、胶片模拟等</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <p>输出结构化的 JSON 文件和适合 AI 图像生成的文本 Prompt，便于后续使用</p>
+            </div>
+        </section>
+
+        <section class="section" id="workflow">
+            <h2 class="section-title">工作<span>流程</span></h2>
+            <div class="container workflow">
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>接收图片</h3>
+                            <p>获取用户上传的图片（URL 或本地路径）</p>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>解析图片内容及构图</h3>
+                            <ul>
+                                <li>主体对象：人物、动物、物体等画面核心元素</li>
+                                <li>场景环境：室内/室外、地点类型、空间特征</li>
+                                <li>动作状态：正在进行的动作、情感表达、人物互动</li>
+                                <li>关键细节：表情、服饰、道具、背景元素</li>
+                                <li>景别：远景、全景、中景、近景、特写</li>
+                                <li>视角：平视、仰视、俯视、侧视、鸟瞰、低角度</li>
+                                <li>构图方式：三分法、对称构图、引导线、框架构图等</li>
+                                <li>画面平衡：视觉重心、空间分布、元素排布</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>识别图片画风</h3>
+                            <ul>
+                                <li>风格类型：写实、超写实、漫画、插画、油画等</li>
+                                <li>画派特征：印象派、超现实主义、立体主义等</li>
+                                <li>技术特点：笔触风格、线条特征、光影处理</li>
+                                <li>时代特征：古典、现代、当代、复古、未来主义</li>
+                                <li>氛围调性：明亮、阴暗、温暖、冷峻、梦幻</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>提取色彩参数</h3>
+                            <ul>
+                                <li>一级调色：阴影、中间调、高光、全局</li>
+                                <li>对比与曝光：对比度、曝光、Gamma、增益、偏移</li>
+                                <li>色轮偏移：阴影/中间调/高光色相与饱和度偏移</li>
+                                <li>曲线：RGB曲线、红通道、绿通道、蓝通道</li>
+                                <li>胶片模拟：胶片类型、颗粒感、暗角、光晕</li>
+                                <li>风格化工具：锐化、模糊、去噪、纹理</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">色彩<span>参数</span></h2>
+            <div class="container color-grading">
+                <div class="color-card">
+                    <h4>一级调色</h4>
+                    <code>【阴影】色相 0-360°，饱和度 0-100%，亮度 0-100%
+【中间调】色相 0-360°，饱和度 0-100%，亮度 0-100%
+【高光】色相 0-360°，饱和度 0-100%，亮度 0-100%</code>
+                </div>
+                <div class="color-card">
+                    <h4>对比与曝光</h4>
+                    <code>对比度：0-100%
+曝光：-5.0 至 +5.0 EV
+Gamma：0.1 至 3.0
+增益：0-100%
+偏移：-100 至 +100</code>
+                </div>
+                <div class="color-card">
+                    <h4>胶片模拟</h4>
+                    <code>胶片类型：柯达 Portra、富士 Velvia
+颗粒感：0-100%
+暗角：0-100%
+光晕：0-100%</code>
+                </div>
+                <div class="color-card">
+                    <h4>风格化工具</h4>
+                    <code>锐化：0-100%
+模糊：0-100%
+去噪：0-100%
+纹理：0-100%</code>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="output">
+            <h2 class="section-title">输出<span>格式</span></h2>
+            <div class="container output-section">
+                <div class="output-card">
+                    <div class="output-header">
+                        <h3>JSON 文件输出</h3>
+                        <span class="output-badge badge-json">image_analysis.json</span>
+                    </div>
+                    <div class="output-content">
+                        <pre><code>{
+  "contentAndComposition": {
+    "subject": "一位身穿红色长裙的少女",
+    "scene": "黄昏时分的欧式花园",
+    "action": "少女正在轻抚花瓣，神情温柔",
+    "details": ["金色长发", "蕾丝裙摆", "粉色玫瑰"],
+    "shotType": "中景",
+    "angle": "平视略微仰视",
+    "composition": "三分法构图，主体位于右侧三分之一处",
+    "balance": "左侧留白，右侧主体突出"
+  },
+  "artStyle": {
+    "styleType": "数字插画",
+    "movement": "现代唯美主义",
+    "technique": "柔和笔触，细腻光影，渐变色彩",
+    "era": "当代",
+    "atmosphere": "温暖梦幻，浪漫唯美"
+  },
+  "colorGrading": {
+    "primaryWheels": {
+      "shadow": {"hue": 30, "saturation": 40, "luminance": 20},
+      "midtones": {"hue": 60, "saturation": 50, "luminance": 50},
+      "highlights": {"hue": 240, "saturation": 30, "luminance": 80}
+    },
+    "contrast": {"contrast": 65, "exposure": 0.5, "gamma": 1.2},
+    "filmLook": {"type": "Kodak Portra 400", "grain": 20, "vignette": 15}
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="output-card">
+                    <div class="output-header">
+                        <h3>文本 Prompt 输出</h3>
+                        <span class="output-badge badge-text">image_prompt.txt</span>
+                    </div>
+                    <div class="output-content">
+                        <pre><code>【艺术风格】数字插画风格，现代唯美主义，柔和笔触，细腻光影，渐变色彩，温暖梦幻氛围
+
+【画面内容】一位身穿红色长裙的少女，金色长发，蕾丝裙摆，正在轻抚粉色玫瑰，神情温柔，位于黄昏时分的欧式花园中，复古路灯散发暖光
+
+【构图方式】中景，平视略微仰视，三分法构图，主体位于右侧三分之一处，左侧留白，画面平衡稳定
+
+【色彩参数】达芬奇调色：阴影色相30°饱和度40%亮度20%，中间调色相60°饱和度50%亮度50%，高光色相240°饱和度30%亮度80%，对比度65%，曝光+0.5EV，Gamma 1.2，全局饱和度75%，轻微S形曲线增强对比度，Kodak Portra 400胶片模拟，20%颗粒感，15%暗角
+
+【画质细节】高清，8K分辨率，精美细节，细腻质感，电影级光影</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="usage">
+            <h2 class="section-title">使用<span>方法</span></h2>
+            <div class="container usage-section">
+                <code># 解析本地图片
+python scripts/analyze_image.py --image /path/to/image.jpg
+
+# 解析网络图片
+python scripts/analyze_image.py --image https://example.com/image.jpg
+
+# 指定输出目录
+python scripts/analyze_image.py --image /path/to/image.jpg --output-dir ./output
+
+# 生成简化版 prompt
+python scripts/analyze_image.py --image /path/to/image.jpg --mode short</code>
+
+                <h3 style="margin-bottom: 20px;">参数说明</h3>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>参数</th>
+                            <th>说明</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>--image</code></td>
+                            <td>图片路径或 URL</td>
+                            <td>必填</td>
+                        </tr>
+                        <tr>
+                            <td><code>--output-dir</code></td>
+                            <td>输出目录</td>
+                            <td>当前目录</td>
+                        </tr>
+                        <tr>
+                            <td><code>--mode</code></td>
+                            <td>输出模式：<code>full</code>（完整）/ <code>short</code>（简化）</td>
+                            <td>full</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">注意<span>事项</span></h2>
+            <div class="container notes-section">
+                <div class="note-card warning">
+                    <h4>⚠️ 色彩参数为估算值</h4>
+                    <p>达芬奇调色参数是基于视觉分析的估算值，精确值需在达芬奇软件中调整</p>
+                </div>
+                <div class="note-card info">
+                    <h4>🎨 风格识别的主观性</h4>
+                    <p>艺术风格识别具有主观性，结果可能存在多种解读</p>
+                </div>
+                <div class="note-card">
+                    <h4>📐 分辨率影响</h4>
+                    <p>低分辨率图片可能影响细节识别精度</p>
+                </div>
+                <div class="note-card">
+                    <h4>©️ 版权注意</h4>
+                    <p>确保解析的图片具有合法使用权限</p>
+                </div>
+                <div class="note-card success">
+                    <h4>✅ 输出标准化</h4>
+                    <p>所有输出参数都经过标准化处理，便于后续使用</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">适用<span>场景</span></h2>
+            <div class="container scenarios">
+                <div class="scenario-tag">
+                    <span>🎮</span>
+                    <p>游戏美术风格参考提取</p>
+                </div>
+                <div class="scenario-tag">
+                    <span>🎬</span>
+                    <p>影视后期色彩分析</p>
+                </div>
+                <div class="scenario-tag">
+                    <span>✏️</span>
+                    <p>插画风格学习</p>
+                </div>
+                <div class="scenario-tag">
+                    <span>✨</span>
+                    <p>AI 图像生成的 Prompt 创作</p>
+                </div>
+                <div class="scenario-tag">
+                    <span>🔍</span>
+                    <p>图像内容检索与分类</p>
+                </div>
+                <div class="scenario-tag">
+                    <span>🎯</span>
+                    <p>视觉效果复刻与参考</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 图片解析助手 - Image Analysis Helper. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" title="GitHub">GitHub</a>
+                <a href="#" title="Twitter">Twitter</a>
+                <a href="#" title="LinkedIn">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
