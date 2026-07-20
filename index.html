@@ -1144,61 +1144,47 @@
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = '正在解析...';
 
-            // 模拟解析过程
-            setTimeout(() => {
-                // 生成示例结果
-                const sampleResult = {
-                    contentAndComposition: {
-                        subject: "图片主体内容",
-                        scene: "场景描述",
-                        action: "动作状态",
-                        details: ["细节1", "细节2", "细节3"],
-                        shotType: "景别",
-                        angle: "视角",
-                        composition: "构图方式",
-                        balance: "画面平衡"
-                    },
-                    artStyle: {
-                        styleType: "风格类型",
-                        movement: "画派",
-                        technique: "技术特点",
-                        era: "时代特征",
-                        atmosphere: "氛围调性"
-                    },
-                    colorGrading: {
-                        primaryWheels: {
-                            shadow: { hue: 30, saturation: 40, luminance: 20 },
-                            midtones: { hue: 60, saturation: 50, luminance: 50 },
-                            highlights: { hue: 240, saturation: 30, luminance: 80 }
-                        },
-                        contrast: { contrast: 65, exposure: 0.5, gamma: 1.2 },
-                        filmLook: { type: "Kodak Portra 400", grain: 20, vignette: 15 }
-                    },
-                    note: "这是一个示例结果。要获得真实的图片解析结果，请使用配套的 Python 脚本或集成 AI 图像识别 API。"
+            const API_URL = 'http://localhost:5000/api/analyze';
+
+            const payload = {};
+            if (currentFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    payload.image_base64 = e.target.result;
+                    callApi(payload);
                 };
+                reader.readAsDataURL(currentFile);
+            } else if (imageUrl) {
+                payload.image_url = imageUrl;
+                callApi(payload);
+            }
 
-                const samplePrompt = `【艺术风格】[风格类型]，[画派特征]，[技术特点]，[氛围调性]
-
-【画面内容】[主体描述]，[场景描述]，[动作状态]，[关键细节]
-
-【构图方式】[景别]，[视角]，[构图方式]，[画面平衡]
-
-【色彩参数】达芬奇调色：阴影色相30°饱和度40%亮度20%，中间调色相60°饱和度50%亮度50%，高光色相240°饱和度30%亮度80%，对比度65%，曝光+0.5EV，Gamma 1.2
-
-【画质细节】高清，8K分辨率，精美细节，细腻质感，电影级光影
-
-注意：这是示例结果。要获得真实解析结果，请使用配套的 Python 脚本 analyze_image.py 或集成 AI 图像识别 API。`;
-
-                jsonResult.textContent = JSON.stringify(sampleResult, null, 2);
-                promptResult.textContent = samplePrompt;
-                
-                resultSection.classList.add('show');
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = '开始解析图片';
-
-                // 滚动到结果区域
-                resultSection.scrollIntoView({ behavior: 'smooth' });
-            }, 1500);
+            function callApi(data) {
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.error) {
+                        alert('解析失败: ' + result.error);
+                        return;
+                    }
+                    jsonResult.textContent = JSON.stringify(result.json, null, 2);
+                    promptResult.textContent = result.prompt;
+                    
+                    resultSection.classList.add('show');
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                })
+                .catch(err => {
+                    alert('请求失败，请确认后端服务已启动（双击运行 启动.bat）。错误: ' + err.message);
+                })
+                .finally(() => {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = '开始解析图片';
+                });
+            }
         }
 
         // 格式化文件大小
