@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业色彩参数 - Image Analysis Helper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #3d3d5c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a3e 50%, #0f0f23 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+        }
+
+        .section {
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .info-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li {
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .demo-box {
+            background: #0a0a18;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .demo-box pre {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #a0a0b0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .feature-item .icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .color-wheel {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .wheel-item {
+            text-align: center;
+        }
+
+        .wheel-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .wheel-item span {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .film-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .film-tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border-color);
+            padding: 30px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">🖼️</div>
+                <div class="logo-text">
+                    <h1>图片解析助手</h1>
+                    <p>Image Analysis Helper</p>
+                </div>
+            </div>
+            <a href="index.html" class="back-link">← 返回首页</a>
+        </div>
+    </header>
+
+    <div class="section">
+        <div class="container">
+            <h2 class="section-title"><span>🌈 专业色彩参数</span></h2>
+            <p class="section-subtitle">使用达芬奇调色专业参数描述图片色彩，包含一级调色、曲线、胶片模拟等专业色彩信息</p>
+
+            <div class="info-card">
+                <h3>功能概述</h3>
+                <p>专业色彩参数分析采用达芬奇调色系统的专业标准，能够精准提取图片的色彩特征，包括一级调色参数、对比与曝光、色彩轮、曲线调整、饱和度控制、胶片模拟和风格化效果等。这些参数对于视频后期制作、摄影调色、AI图像生成具有重要参考价值。</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="icon">🎚️</div>
+                    <h4>一级调色</h4>
+                    <p>提取阴影、中间调、高光的色相、饱和度、亮度参数，对应达芬奇一级调色轮</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">⚖️</div>
+                    <h4>对比与曝光</h4>
+                    <p>分析对比度、曝光值、Gamma、增益、偏移等曝光参数</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🔴</div>
+                    <h4>色彩轮</h4>
+                    <p>提取阴影、中间调、高光的色相偏移和饱和度偏移参数</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">📈</div>
+                    <h4>曲线调整</h4>
+                    <p>分析RGB曲线和各通道曲线的形态特征</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">✨</div>
+                    <h4>胶片模拟</h4>
+                    <p>识别图片的胶片类型、颗粒感、暗角、光晕等胶片效果</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🎯</div>
+                    <h4>风格化工具</h4>
+                    <p>分析锐化、模糊、降噪、纹理等风格化参数</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>色彩轮示意图</h3>
+                <div class="color-wheel">
+                    <div class="wheel-item">
+                        <div class="wheel-circle" style="background: radial-gradient(circle, rgba(30,30,50,0.8) 0%, rgba(10,10,20,0.9) 100%);"></div>
+                        <span>阴影 Shadow</span>
+                    </div>
+                    <div class="wheel-item">
+                        <div class="wheel-circle" style="background: radial-gradient(circle, rgba(100,100,120,0.8) 0%, rgba(50,50,70,0.9) 100%);"></div>
+                        <span>中间调 Midtones</span>
+                    </div>
+                    <div class="wheel-item">
+                        <div class="wheel-circle" style="background: radial-gradient(circle, rgba(200,200,220,0.8) 0%, rgba(100,100,120,0.9) 100%);"></div>
+                        <span>高光 Highlights</span>
+                    </div>
+                    <div class="wheel-item">
+                        <div class="wheel-circle" style="background: radial-gradient(circle, rgba(150,100,200,0.8) 0%, rgba(80,50,120,0.9) 100%);"></div>
+                        <span>全局 Global</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>常见胶片模拟</h3>
+                <div class="film-list">
+                    <div class="film-tag">Kodak Portra 400</div>
+                    <div class="film-tag">Fuji Velvia 50</div>
+                    <div class="film-tag">Kodak Ektar 100</div>
+                    <div class="film-tag">Fuji Pro 400H</div>
+                    <div class="film-tag">Kodak Tri-X 400</div>
+                    <div class="film-tag">Agfa Vista 200</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>输出字段说明</h3>
+                <ul>
+                    <li><strong>primaryWheels</strong> - 一级调色轮（阴影/中间调/高光/全局，包含hue/saturation/luminance）</li>
+                    <li><strong>contrast</strong> - 对比与曝光参数（contrast/exposure/gamma/gain/offset/blackPoint/whitePoint）</li>
+                    <li><strong>colorWheels</strong> - 色彩轮偏移参数</li>
+                    <li><strong>curves</strong> - 曲线调整（RGB/Red/Green/Blue）</li>
+                    <li><strong>saturation</strong> - 饱和度控制</li>
+                    <li><strong>filmLook</strong> - 胶片模拟（type/grain/vignette/flare）</li>
+                    <li><strong>stylization</strong> - 风格化效果（sharpen/blur/denoise/texture）</li>
+                    <li><strong>summary</strong> - 色彩总结</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>示例输出</h3>
+                <div class="demo-box">
+                    <pre>{
+  "colorGrading": {
+    "primaryWheels": {
+      "shadow": { "hue": 30, "saturation": 40, "luminance": 20 },
+      "midtones": { "hue": 60, "saturation": 50, "luminance": 50 },
+      "highlights": { "hue": 240, "saturation": 30, "luminance": 80 }
+    },
+    "contrast": {
+      "contrast": 65,
+      "exposure": 0.5,
+      "gamma": 1.2
+    },
+    "filmLook": {
+      "type": "Kodak Portra 400",
+      "grain": 20,
+      "vignette": 15
+    },
+    "summary": "暖色调为主，对比度适中，带有轻微胶片颗粒感"
+  }
+}</pre>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>应用场景</h3>
+                <ul>
+                    <li>视频后期调色参考</li>
+                    <li>摄影作品色彩分析</li>
+                    <li>达芬奇调色预设创建</li>
+                    <li>AI图像生成色彩控制</li>
+                    <li>游戏美术色彩设定</li>
+                    <li>影视制作色彩指导</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>图片解析助手 - 让AI帮你读懂每一张图片</p>
+    </footer>
+</body>
+</html>

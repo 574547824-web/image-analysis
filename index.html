@@ -209,6 +209,17 @@
             line-height: 1.5;
         }
 
+        .feature-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card-link:hover .feature-card {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
         .section {
             padding: 60px 20px;
         }
@@ -927,21 +938,27 @@
         </section>
 
         <section class="features" id="features">
-            <div class="feature-card">
-                <div class="feature-icon">📷</div>
-                <h3>图片内容解析</h3>
-                <p>识别图片主体、场景、动作、细节，以及构图方式、视角、景别等关键信息</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎨</div>
-                <h3>艺术风格识别</h3>
-                <p>分析图片的艺术风格、画派特征、技术特点、时代特征和氛围调性</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🌈</div>
-                <h3>专业色彩参数</h3>
-                <p>使用达芬奇调色专业参数描述图片色彩，包含一级调色、曲线、胶片模拟等</p>
-            </div>
+            <a href="content.html" class="feature-card-link">
+                <div class="feature-card">
+                    <div class="feature-icon">📷</div>
+                    <h3>图片内容解析</h3>
+                    <p>识别图片主体、场景、动作、细节，以及构图方式、视角、景别等关键信息</p>
+                </div>
+            </a>
+            <a href="style.html" class="feature-card-link">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>艺术风格识别</h3>
+                    <p>分析图片的艺术风格、画派特征、技术特点、时代特征和氛围调性</p>
+                </div>
+            </a>
+            <a href="color.html" class="feature-card-link">
+                <div class="feature-card">
+                    <div class="feature-icon">🌈</div>
+                    <h3>专业色彩参数</h3>
+                    <p>使用达芬奇调色专业参数描述图片色彩，包含一级调色、曲线、胶片模拟等</p>
+                </div>
+            </a>
             <div class="feature-card">
                 <div class="feature-icon">📋</div>
                 <p>输出结构化的 JSON 文件和适合 AI 图像生成的文本 Prompt，便于后续使用</p>
