@@ -847,7 +847,6 @@
             </div>
             <div class="header-links">
                 <a href="#upload">上传图片</a>
-                <a href="#usage">使用方法</a>
             </div>
         </div>
     </header>
@@ -941,107 +940,6 @@
             <div class="feature-card">
                 <div class="feature-icon">📋</div>
                 <p>输出结构化的 JSON 文件和适合 AI 图像生成的文本 Prompt，便于后续使用</p>
-            </div>
-        </section>
-
-        <section class="section" id="usage">
-            <h2 class="section-title">使用<span>方法</span></h2>
-            <div class="container usage-section">
-                <code># 解析本地图片
-python scripts/analyze_image.py --image /path/to/image.jpg
-
-# 解析网络图片
-python scripts/analyze_image.py --image https://example.com/image.jpg
-
-# 指定输出目录
-python scripts/analyze_image.py --image /path/to/image.jpg --output-dir ./output
-
-# 生成简化版 prompt
-python scripts/analyze_image.py --image /path/to/image.jpg --mode short</code>
-
-                <h3 style="margin-bottom: 20px;">参数说明</h3>
-                <table class="params-table">
-                    <thead>
-                        <tr>
-                            <th>参数</th>
-                            <th>说明</th>
-                            <th>默认值</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>--image</code></td>
-                            <td>图片路径或 URL</td>
-                            <td>必填</td>
-                        </tr>
-                        <tr>
-                            <td><code>--output-dir</code></td>
-                            <td>输出目录</td>
-                            <td>当前目录</td>
-                        </tr>
-                        <tr>
-                            <td><code>--mode</code></td>
-                            <td>输出模式：<code>full</code>（完整）/ <code>short</code>（简化）</td>
-                            <td>full</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">注意<span>事项</span></h2>
-            <div class="container notes-section">
-                <div class="note-card warning">
-                    <h4>⚠️ 色彩参数为估算值</h4>
-                    <p>达芬奇调色参数是基于视觉分析的估算值，精确值需在达芬奇软件中调整</p>
-                </div>
-                <div class="note-card info">
-                    <h4>🎨 风格识别的主观性</h4>
-                    <p>艺术风格识别具有主观性，结果可能存在多种解读</p>
-                </div>
-                <div class="note-card">
-                    <h4>📐 分辨率影响</h4>
-                    <p>低分辨率图片可能影响细节识别精度</p>
-                </div>
-                <div class="note-card">
-                    <h4>©️ 版权注意</h4>
-                    <p>确保解析的图片具有合法使用权限</p>
-                </div>
-                <div class="note-card success">
-                    <h4>✅ 输出标准化</h4>
-                    <p>所有输出参数都经过标准化处理，便于后续使用</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2 class="section-title">适用<span>场景</span></h2>
-            <div class="container scenarios">
-                <div class="scenario-tag">
-                    <span>🎮</span>
-                    <p>游戏美术风格参考提取</p>
-                </div>
-                <div class="scenario-tag">
-                    <span>🎬</span>
-                    <p>影视后期色彩分析</p>
-                </div>
-                <div class="scenario-tag">
-                    <span>✏️</span>
-                    <p>插画风格学习</p>
-                </div>
-                <div class="scenario-tag">
-                    <span>✨</span>
-                    <p>AI 图像生成的 Prompt 创作</p>
-                </div>
-                <div class="scenario-tag">
-                    <span>🔍</span>
-                    <p>图像内容检索与分类</p>
-                </div>
-                <div class="scenario-tag">
-                    <span>🎯</span>
-                    <p>视觉效果复刻与参考</p>
-                </div>
             </div>
         </section>
     </main>
