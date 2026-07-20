@@ -1134,7 +1134,7 @@
             analyzeImage();
         });
 
-        // 解析图片（模拟功能）
+        // 解析图片（直接调用智谱AI API）
         function analyzeImage() {
             const analyzeBtn = document.getElementById('analyzeBtn');
             const resultSection = document.getElementById('resultSection');
@@ -1144,47 +1144,151 @@
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = '正在解析...';
 
-            const API_URL = 'http://localhost:5000/api/analyze';
+            const API_KEY = '07e514571c764daeaec7bfbbf1df63e3.o9wh1t6oHLuhkTWP';
+            const API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
 
-            const payload = {};
+            const SYSTEM_PROMPT = `你是一位专业的图像分析师。请分析上传的图片，输出结构化的JSON数据，包含以下三个部分：
+
+1. contentAndComposition（图片内容及构图）：
+   - subject: 主体对象描述
+   - scene: 场景环境描述
+   - action: 动作状态描述
+   - details: 关键细节数组
+   - shotType: 景别（远景/全景/中景/近景/特写）
+   - angle: 视角（平视/仰视/俯视/侧视/鸟瞰/低角度）
+   - composition: 构图方式
+   - balance: 画面平衡描述
+
+2. artStyle（艺术风格）：
+   - styleType: 风格类型
+   - movement: 画派特征
+   - technique: 技术特点
+   - era: 时代特征
+   - atmosphere: 氛围调性
+
+3. colorGrading（色彩参数，达芬奇调色风格）：
+   - primaryWheels: {shadow, midtones, highlights}，每个包含hue(0-360), saturation(0-100), luminance(0-100)
+   - contrast: {contrast, exposure, gamma}
+   - filmLook: {type, grain, vignette}
+   - summary: 色彩总结
+
+请直接输出JSON，不要有任何额外文字，JSON格式严格正确。`;
+
+            const payload = {
+                model: 'glm-4v-flash',
+                messages: [
+                    {
+                        role: 'user',
+                        content: []
+                    }
+                ],
+                temperature: 0.3,
+                max_tokens: 1024
+            };
+
             if (currentFile) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    payload.image_base64 = e.target.result;
+                    payload.messages[0].content.push({
+                        type: 'image_url',
+                        image_url: { url: e.target.result }
+                    });
+                    payload.messages[0].content.push({
+                        type: 'text',
+                        text: SYSTEM_PROMPT
+                    });
                     callApi(payload);
                 };
                 reader.readAsDataURL(currentFile);
             } else if (imageUrl) {
-                payload.image_url = imageUrl;
+                payload.messages[0].content.push({
+                    type: 'image_url',
+                    image_url: { url: imageUrl }
+                });
+                payload.messages[0].content.push({
+                    type: 'text',
+                    text: SYSTEM_PROMPT
+                });
                 callApi(payload);
             }
 
             function callApi(data) {
                 fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + API_KEY
+                    },
                     body: JSON.stringify(data)
                 })
                 .then(res => res.json())
                 .then(result => {
                     if (result.error) {
-                        alert('解析失败: ' + result.error);
+                        alert('解析失败: ' + (result.error.message || JSON.stringify(result.error)));
                         return;
                     }
-                    jsonResult.textContent = JSON.stringify(result.json, null, 2);
-                    promptResult.textContent = result.prompt;
+                    let resultText = result.choices[0].message.content.trim();
+                    resultText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+                    let resultJson;
+                    try {
+                        resultJson = JSON.parse(resultText);
+                    } catch (e) {
+                        resultJson = { raw: resultText };
+                    }
+                    const promptText = generatePrompt(resultJson);
+                    jsonResult.textContent = JSON.stringify(resultJson, null, 2);
+                    promptResult.textContent = promptText;
                     
                     resultSection.classList.add('show');
                     resultSection.scrollIntoView({ behavior: 'smooth' });
                 })
                 .catch(err => {
-                    alert('请求失败，请确认后端服务已启动（双击运行 启动.bat）。错误: ' + err.message);
+                    alert('请求失败: ' + err.message + '\n\n可能原因：\n1. 网络问题\n2. API Key失效\n3. 图片过大');
                 })
                 .finally(() => {
                     analyzeBtn.disabled = false;
                     analyzeBtn.textContent = '开始解析图片';
                 });
             }
+        }
+
+        // 生成Prompt文本
+        function generatePrompt(data) {
+            if (!data.contentAndComposition && !data.artStyle) {
+                return data.raw || JSON.stringify(data);
+            }
+            const cc = data.contentAndComposition || {};
+            const style = data.artStyle || {};
+            const color = data.colorGrading || {};
+
+            const artStyle = [style.styleType, style.movement, style.technique, style.atmosphere].filter(Boolean).join('，');
+            const content = [cc.subject, cc.scene, cc.action, ...(cc.details || [])].filter(Boolean).join('，');
+            const composition = [cc.shotType, cc.angle, cc.composition, cc.balance].filter(Boolean).join('，');
+
+            const pw = color.primaryWheels || {};
+            const shadow = pw.shadow || {};
+            const mid = pw.midtones || {};
+            const high = pw.highlights || {};
+            const primary = `阴影色相${shadow.hue !== undefined ? shadow.hue : 30}°饱和度${shadow.saturation !== undefined ? shadow.saturation : 40}%亮度${shadow.luminance !== undefined ? shadow.luminance : 20}%，中间调色相${mid.hue !== undefined ? mid.hue : 60}°饱和度${mid.saturation !== undefined ? mid.saturation : 50}%亮度${mid.luminance !== undefined ? mid.luminance : 50}%，高光色相${high.hue !== undefined ? high.hue : 240}°饱和度${high.saturation !== undefined ? high.saturation : 30}%亮度${high.luminance !== undefined ? high.luminance : 80}%`;
+
+            const contrast = color.contrast || {};
+            const contrastStr = `对比度${contrast.contrast !== undefined ? contrast.contrast : 65}%，曝光${contrast.exposure !== undefined ? (contrast.exposure >= 0 ? '+' : '') + contrast.exposure : '+0.5'}EV，Gamma ${contrast.gamma !== undefined ? contrast.gamma : 1.2}`;
+
+            const film = color.filmLook || {};
+            const filmStr = `${film.type || 'Kodak Portra 400'}胶片模拟`;
+            const filmDetail = `${film.grain !== undefined ? film.grain : 20}%颗粒感，${film.vignette !== undefined ? film.vignette : 15}%暗角`;
+
+            const colorParams = `达芬奇调色：${primary}，${contrastStr}，${filmStr}，${filmDetail}`;
+
+            return `【艺术风格】${artStyle}
+
+【画面内容】${content}
+
+【构图方式】${composition}
+
+【色彩参数】${colorParams}
+
+【画质细节】高清，8K分辨率，精美细节，细腻质感，电影级光影`;
         }
 
         // 格式化文件大小
