@@ -621,6 +621,218 @@
         .copy-success.show {
             opacity: 1;
         }
+
+        /* 上传区域样式 */
+        .upload-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px dashed var(--border-color);
+            margin: 40px auto;
+            max-width: 800px;
+            transition: all 0.3s;
+        }
+
+        .upload-section.dragover {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .upload-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .upload-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .upload-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .upload-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .upload-content {
+            display: none;
+        }
+
+        .upload-content.active {
+            display: block;
+        }
+
+        .upload-area {
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-area h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .url-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .preview-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .preview-container img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .preview-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .preview-info p {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .error-message {
+            color: #f87171;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -634,8 +846,7 @@
                 </div>
             </div>
             <div class="header-links">
-                <a href="#features">功能特性</a>
-                <a href="#workflow">工作流程</a>
+                <a href="#upload">上传图片</a>
                 <a href="#output">输出格式</a>
                 <a href="#usage">使用方法</a>
             </div>
@@ -643,12 +854,72 @@
     </header>
 
     <main>
-        <section class="hero">
+        <section class="hero" id="upload">
             <h2>图片解析助手</h2>
-            <p>将图片解析为结构化的文本信息，输出包含图片内容与构图、画风、色彩参数的 JSON 文件和文本 Prompt</p>
-            <div class="hero-buttons">
-                <a href="#workflow" class="btn btn-primary">开始使用</a>
-                <a href="#output" class="btn btn-secondary">查看输出格式</a>
+            <p>上传本地图片或粘贴图片URL，将图片解析为结构化的文本信息</p>
+            
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-tabs">
+                    <button class="upload-tab active" data-tab="local">📷 上传本地图片</button>
+                    <button class="upload-tab" data-tab="url">🔗 粘贴图片URL</button>
+                </div>
+
+                <!-- 本地图片上传 -->
+                <div class="upload-content active" id="localUpload">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <h3>点击或拖拽图片到此处</h3>
+                        <p>支持 JPG、PNG、GIF、WebP 等格式，最大 10MB</p>
+                        <button type="button" class="upload-btn">选择图片</button>
+                        <input type="file" class="file-input" id="fileInput" accept="image/*">
+                    </div>
+                    <div class="error-message" id="fileError"></div>
+                </div>
+
+                <!-- URL输入 -->
+                <div class="upload-content" id="urlUpload">
+                    <div class="url-input-group">
+                        <input type="text" class="url-input" id="urlInput" placeholder="请输入图片URL，如 https://example.com/image.jpg">
+                        <button type="button" class="upload-btn" id="loadUrlBtn">加载图片</button>
+                    </div>
+                    <div class="error-message" id="urlError"></div>
+                </div>
+
+                <!-- 图片预览 -->
+                <div class="preview-section" id="previewSection">
+                    <div class="preview-container">
+                        <img id="previewImage" src="" alt="预览图片">
+                        <div class="preview-info">
+                            <p id="imageInfo">图片信息</p>
+                            <button type="button" class="copy-btn" id="resetBtn">重新选择</button>
+                        </div>
+                        <button type="button" class="analyze-btn" id="analyzeBtn">开始解析图片</button>
+                    </div>
+                </div>
+
+                <!-- 解析结果 -->
+                <div class="result-section" id="resultSection">
+                    <div class="output-section">
+                        <div class="output-card">
+                            <div class="output-header">
+                                <h3>JSON 解析结果</h3>
+                                <span class="output-badge badge-json">image_analysis.json</span>
+                            </div>
+                            <div class="output-content">
+                                <pre><code id="jsonResult">解析结果将显示在这里...</code></pre>
+                            </div>
+                        </div>
+                        <div class="output-card">
+                            <div class="output-header">
+                                <h3>文本 Prompt</h3>
+                                <span class="output-badge badge-text">image_prompt.txt</span>
+                            </div>
+                            <div class="output-content">
+                                <pre><code id="promptResult">解析结果将显示在这里...</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -671,64 +942,6 @@
             <div class="feature-card">
                 <div class="feature-icon">📋</div>
                 <p>输出结构化的 JSON 文件和适合 AI 图像生成的文本 Prompt，便于后续使用</p>
-            </div>
-        </section>
-
-        <section class="section" id="workflow">
-            <h2 class="section-title">工作<span>流程</span></h2>
-            <div class="container workflow">
-                <div class="workflow-steps">
-                    <div class="workflow-step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>接收图片</h3>
-                            <p>获取用户上传的图片（URL 或本地路径）</p>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>解析图片内容及构图</h3>
-                            <ul>
-                                <li>主体对象：人物、动物、物体等画面核心元素</li>
-                                <li>场景环境：室内/室外、地点类型、空间特征</li>
-                                <li>动作状态：正在进行的动作、情感表达、人物互动</li>
-                                <li>关键细节：表情、服饰、道具、背景元素</li>
-                                <li>景别：远景、全景、中景、近景、特写</li>
-                                <li>视角：平视、仰视、俯视、侧视、鸟瞰、低角度</li>
-                                <li>构图方式：三分法、对称构图、引导线、框架构图等</li>
-                                <li>画面平衡：视觉重心、空间分布、元素排布</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>识别图片画风</h3>
-                            <ul>
-                                <li>风格类型：写实、超写实、漫画、插画、油画等</li>
-                                <li>画派特征：印象派、超现实主义、立体主义等</li>
-                                <li>技术特点：笔触风格、线条特征、光影处理</li>
-                                <li>时代特征：古典、现代、当代、复古、未来主义</li>
-                                <li>氛围调性：明亮、阴暗、温暖、冷峻、梦幻</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>提取色彩参数</h3>
-                            <ul>
-                                <li>一级调色：阴影、中间调、高光、全局</li>
-                                <li>对比与曝光：对比度、曝光、Gamma、增益、偏移</li>
-                                <li>色轮偏移：阴影/中间调/高光色相与饱和度偏移</li>
-                                <li>曲线：RGB曲线、红通道、绿通道、蓝通道</li>
-                                <li>胶片模拟：胶片类型、颗粒感、暗角、光晕</li>
-                                <li>风格化工具：锐化、模糊、去噪、纹理</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -767,11 +980,11 @@ Gamma：0.1 至 3.0
         </section>
 
         <section class="section" id="output">
-            <h2 class="section-title">输出<span>格式</span></h2>
+            <h2 class="section-title">输出<span>示例</span></h2>
             <div class="container output-section">
                 <div class="output-card">
                     <div class="output-header">
-                        <h3>JSON 文件输出</h3>
+                        <h3>JSON 输出示例</h3>
                         <span class="output-badge badge-json">image_analysis.json</span>
                     </div>
                     <div class="output-content">
@@ -807,7 +1020,7 @@ Gamma：0.1 至 3.0
                 </div>
                 <div class="output-card">
                     <div class="output-header">
-                        <h3>文本 Prompt 输出</h3>
+                        <h3>文本 Prompt 示例</h3>
                         <span class="output-badge badge-text">image_prompt.txt</span>
                     </div>
                     <div class="output-content">
@@ -939,6 +1152,7 @@ python scripts/analyze_image.py --image /path/to/image.jpg --mode short</code>
     </footer>
 
     <script>
+        // 平滑滚动
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -948,6 +1162,255 @@ python scripts/analyze_image.py --image /path/to/image.jpg --mode short</code>
                 }
             });
         });
+
+        // 标签切换
+        const tabs = document.querySelectorAll('.upload-tab');
+        const contents = document.querySelectorAll('.upload-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(targetTab + 'Upload').classList.add('active');
+                
+                // 清除错误信息
+                document.getElementById('fileError').classList.remove('show');
+                document.getElementById('urlError').classList.remove('show');
+            });
+        });
+
+        // 本地图片上传
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewSection = document.getElementById('previewSection');
+        const previewImage = document.getElementById('previewImage');
+        const imageInfo = document.getElementById('imageInfo');
+        const fileError = document.getElementById('fileError');
+        const urlError = document.getElementById('urlError');
+
+        // 点击上传区域
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // 文件选择
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.parentElement.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.parentElement.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.parentElement.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // 处理文件
+        function handleFile(file) {
+            fileError.classList.remove('show');
+            
+            // 验证文件类型
+            if (!file.type.startsWith('image/')) {
+                showFileError('请选择有效的图片文件');
+                return;
+            }
+
+            // 验证文件大小（10MB）
+            if (file.size > 10 * 1024 * 1024) {
+                showFileError('图片大小不能超过 10MB');
+                return;
+            }
+
+            // 显示预览
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewImage.dataset.source = 'local';
+                previewImage.dataset.fileName = file.name;
+                previewImage.dataset.fileSize = formatFileSize(file.size);
+                previewImage.dataset.fileType = file.type;
+                
+                imageInfo.textContent = `文件名: ${file.name} | 大小: ${formatFileSize(file.size)} | 类型: ${file.type}`;
+                previewSection.classList.add('show');
+                
+                // 隐藏结果区域
+                document.getElementById('resultSection').classList.remove('show');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // URL加载图片
+        const urlInput = document.getElementById('urlInput');
+        const loadUrlBtn = document.getElementById('loadUrlBtn');
+
+        loadUrlBtn.addEventListener('click', () => {
+            loadUrlImage();
+        });
+
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                loadUrlImage();
+            }
+        });
+
+        function loadUrlImage() {
+            urlError.classList.remove('show');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showUrlError('请输入图片URL');
+                return;
+            }
+
+            if (!url.match(/^https?:\/\/.+/)) {
+                showUrlError('请输入有效的URL（以 http:// 或 https:// 开头）');
+                return;
+            }
+
+            // 测试图片加载
+            const testImg = new Image();
+            testImg.crossOrigin = 'anonymous';
+            
+            testImg.onload = () => {
+                previewImage.src = url;
+                previewImage.dataset.source = 'url';
+                previewImage.dataset.fileName = url.split('/').pop() || 'url-image';
+                previewImage.dataset.fileSize = '未知';
+                previewImage.dataset.fileType = 'URL';
+                
+                imageInfo.textContent = `URL: ${url}`;
+                previewSection.classList.add('show');
+                
+                // 隐藏结果区域
+                document.getElementById('resultSection').classList.remove('show');
+            };
+
+            testImg.onerror = () => {
+                showUrlError('图片加载失败，请检查URL是否正确或图片是否允许跨域访问');
+            };
+
+            testImg.src = url;
+        }
+
+        // 重新选择
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            previewSection.classList.remove('show');
+            document.getElementById('resultSection').classList.remove('show');
+            fileInput.value = '';
+            urlInput.value = '';
+            previewImage.src = '';
+        });
+
+        // 开始解析
+        document.getElementById('analyzeBtn').addEventListener('click', () => {
+            analyzeImage();
+        });
+
+        // 解析图片（模拟功能）
+        function analyzeImage() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const resultSection = document.getElementById('resultSection');
+            const jsonResult = document.getElementById('jsonResult');
+            const promptResult = document.getElementById('promptResult');
+
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '正在解析...';
+
+            // 模拟解析过程
+            setTimeout(() => {
+                // 生成示例结果
+                const sampleResult = {
+                    contentAndComposition: {
+                        subject: "图片主体内容",
+                        scene: "场景描述",
+                        action: "动作状态",
+                        details: ["细节1", "细节2", "细节3"],
+                        shotType: "景别",
+                        angle: "视角",
+                        composition: "构图方式",
+                        balance: "画面平衡"
+                    },
+                    artStyle: {
+                        styleType: "风格类型",
+                        movement: "画派",
+                        technique: "技术特点",
+                        era: "时代特征",
+                        atmosphere: "氛围调性"
+                    },
+                    colorGrading: {
+                        primaryWheels: {
+                            shadow: { hue: 30, saturation: 40, luminance: 20 },
+                            midtones: { hue: 60, saturation: 50, luminance: 50 },
+                            highlights: { hue: 240, saturation: 30, luminance: 80 }
+                        },
+                        contrast: { contrast: 65, exposure: 0.5, gamma: 1.2 },
+                        filmLook: { type: "Kodak Portra 400", grain: 20, vignette: 15 }
+                    },
+                    note: "这是一个示例结果。要获得真实的图片解析结果，请使用配套的 Python 脚本或集成 AI 图像识别 API。"
+                };
+
+                const samplePrompt = `【艺术风格】[风格类型]，[画派特征]，[技术特点]，[氛围调性]
+
+【画面内容】[主体描述]，[场景描述]，[动作状态]，[关键细节]
+
+【构图方式】[景别]，[视角]，[构图方式]，[画面平衡]
+
+【色彩参数】达芬奇调色：阴影色相30°饱和度40%亮度20%，中间调色相60°饱和度50%亮度50%，高光色相240°饱和度30%亮度80%，对比度65%，曝光+0.5EV，Gamma 1.2
+
+【画质细节】高清，8K分辨率，精美细节，细腻质感，电影级光影
+
+注意：这是示例结果。要获得真实解析结果，请使用配套的 Python 脚本 analyze_image.py 或集成 AI 图像识别 API。`;
+
+                jsonResult.textContent = JSON.stringify(sampleResult, null, 2);
+                promptResult.textContent = samplePrompt;
+                
+                resultSection.classList.add('show');
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '开始解析图片';
+
+                // 滚动到结果区域
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }, 1500);
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 显示错误信息
+        function showFileError(message) {
+            fileError.textContent = message;
+            fileError.classList.add('show');
+        }
+
+        function showUrlError(message) {
+            urlError.textContent = message;
+            urlError.classList.add('show');
+        }
     </script>
 </body>
 </html>
